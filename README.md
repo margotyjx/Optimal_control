@@ -26,9 +26,21 @@ $$ dY_t = (b(Y_t) + \sigma(Y_t) \sigma^T(Y_t) v^*(Y_t)) dt + \sigma(Y_t) dW_t $$
 
 such that $v^*(\cdot)$ satisfies
 
-$$ \sigma^\top v = \sigma^\top \nabla \log q^+$$
+$$ \sigma^\top v^* = \sigma^\top \nabla \log q^+,$$
 
-where $q^+$ is the forward committor function satisfies the boundary value problem:
+trajectories starting from boundary of $A$ goes to $B$ almost sure, where $q^+$ is the forward committor function. 
+
+The transition rate from $A$ to $B$ is defined as
+
+$$ \nu_{AB} = \lim_{T \rightarrow \infty} \frac{N_{AB}}{T}$$
+
+where $N_{AB}$ denotes the number of transitions from $A$ to $B$ in time interval $[0,T]$. The transition rate can be recovered via
+
+$$ \nu_{AB} = \frac{\rho_{AB}}{\mathbb{E}[\tau_{AB}]} $$
+
+where $\rho_{AB}$ is the reactive probability and $\mathbb{E}[\tau_{AB}]$ denotes the mean transition time from $A$ to $B$. The quantity $\mathbb{E}[\tau_{AB}]$ can be sampled from the optimal controlled process and $\rho_{AB}$ depends on the committor.
+
+The forward committor function $q^+$ satisfies the boundary value problem:
 
 $$ \begin{cases}
 b \cdot \nabla q^+ + \frac{1}{2} \sigma \sigma^T : \nabla \nabla q^+  = 0 & x \in \Omega \backslash (A \cup B)\\
@@ -57,10 +69,21 @@ FEM are also used as a comparison for the committor functions. For more details 
 ## Usage
 
 ### Mueller potential in 2D
-
+- Train NN-solver for committor function: ./Mueller/mueller_metadynamics_uniform_in_space.ipynb
+- Solve committor function through FEM: ./Mueller/FEM_TPT.py
+- Compare results of committor using NN-solver and FEM: ./Mueller/evaluation_file.ipynb
+- Compute transition rate: ./Mueller/transition rate- optimal control.ipynb
 
 ### Lennard-Jones-7 in 2D
-
+- Train NN-solver for committor function: ./LJ7_2D/LJ7 - NN train.ipynb
+- Solve committor function through FEM: ./LJ7_2D/LJ7/FEM_TPT.py
+- Compute transition rate with controlled dynamics: ./LJ7_2D/LJ7-optimal control.ipynb
+- Compute transition rate with unbiased dynamics in 14D: ./LJ7_2D/MALA transition rate.py
 
 ### Duffing Oscillator in 1D
+- Train PINN-solver for committor function: ./Duffing/PINN_test.ipynb
+- Solve committor function through FEM: ./Duffing/Duffing_committor_ellipse.ipynb
+- Compare results of committor using NN-solver and FEM: ./Duffing/evaluation_file_PINN.ipynb
+- Compute transition rate with controlled dynamics: ./Duffing/Estimating transition rate via sampling - optimal control
+- Compute transition rate with unbiased dynamics: ./Duffing/Transition rate_unbiased.py
 
