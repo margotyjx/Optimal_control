@@ -64,7 +64,6 @@ FEM are also used as a comparison for the committor functions. For more details 
 
 ## Requirements:
 - python 3.7
-- torch 1.4.1
 
 ## Usage
 
