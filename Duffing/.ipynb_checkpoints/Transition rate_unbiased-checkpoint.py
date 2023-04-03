@@ -231,10 +231,10 @@ total_time = Length*M*dt
 # endregion
 
 # region
-print('Transition rates are: {}, expected travel times are: {}'.format(np.array(Count)/(Length*dt), 
+print('Transition rates are: {:.4}, expected travel times are: {:.4}'.format(np.array(Count)/(Length*dt), 
                                                                        E_TAB*dt))
-print('Averaged transition rates: {} and averaged E_TAB is {}'.format(round(total_count/total_time,4), round(np.mean(E_TAB)*dt,4)))
-print('rho_A are: {}, rho_AB are: {}'.format(TAi/Length,TABi/Length))
+print('Averaged transition rates: {:.4} and averaged E_TAB is {:.4}'.format(round(total_count/total_time,4), round(np.mean(E_TAB)*dt,4)))
+print('rho_A are: {:.4}, rho_AB are: {:.4}'.format(TAi/Length,TABi/Length))
 print('rho_A is ', round(all_TA*dt/total_time,4))
 print('rho_AB is', round(all_TAB*dt/total_time,4))
 
@@ -242,30 +242,30 @@ obj = np.array(Count)/(Length*dt)
 n = len(obj)
 m, se = np.mean(obj), scipy.stats.sem(obj)
 h = se * scipy.stats.t.ppf((1 + 0.95) / 2., n-1)
-print('mean transition rate is {}, confidence interval is: [{},{}], with standard error\
-       {}'.format(m,round(m-h,7),round(m+h,7),round(se,7)))
+print('mean transition rate is {:.4}, confidence interval is: [{:.4},{:.4}], with standard error\
+       {:.4}'.format(m,round(m-h,7),round(m+h,7),round(se,7)))
 
 obj = TAi/Length
 n = len(obj)
 m, se = np.mean(obj), scipy.stats.sem(obj)
 h = se * scipy.stats.t.ppf((1 + 0.95) / 2., n-1)
-print('expected rho_A is {}, confidence interval is: [{},{}], with standard error\
-       {}'.format(round(m,4),round(m-h,4),round(m+h,4),round(se,4)))
+print('expected rho_A is {:.4}, confidence interval is: [{:.4},{:.4}], with standard error\
+       {:.4}'.format(round(m,4),round(m-h,4),round(m+h,4),round(se,4)))
 
 obj = TABi/Length
 n = len(obj)
 m, se = np.mean(obj), scipy.stats.sem(obj)
 h = se * scipy.stats.t.ppf((1 + 0.95) / 2., n-1)
-print('expected rho_AB is {}, confidence interval is: [{},{}], with standard error\
-       {}'.format(round(m,4),round(m-h,4),round(m+h,4),round(se,4)))
+print('expected rho_AB is {:.4}, confidence interval is: [{:.4},{:.4}], with standard error\
+       {:.4}'.format(round(m,4),round(m-h,4),round(m+h,4),round(se,4)))
 
 obj = E_TAB*dt
 n = len(obj)
 m, se = np.mean(obj), scipy.stats.sem(obj)
 h = se * scipy.stats.t.ppf((1 + 0.95) / 2., n-1)
-print('expected transition time is {}, confidence interval is: [{},{}], with standard error\
-       {}'.format(round(m,4),round(m-h,4),round(m+h,4),round(se,4)))
-print(h)
+print('expected transition time is {:.4}, confidence interval is: [{:.4},{:.4}], with standard error\
+       {:.4}'.format(round(m,4),round(m-h,4),round(m+h,4),round(se,4)))
+
 # endregion
 
 
