@@ -47,7 +47,7 @@ def MALAstep(x,pot_x,grad_x,fpot,fgrad,beta,dt,std):
     qxy =  np.sum(w**2)  #||w||^2
     qyx = np.sum((x - y + dt*grad_y)**2) # ||x-y+dt*grad V(y)||
     alpha = np.exp(-beta*(pot_y-pot_x+(qyx-qxy)*0.25/dt))
-    if alpha < 1: # accept move # are we actually mean when alpha >= 1?
+    if alpha < 1: 
         x = y
         pot_x = pot_y
         grad_x = grad_y

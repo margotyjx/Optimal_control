@@ -40,6 +40,18 @@ def dintersect(d1,d2):
 def dunion(d1,d2):
     return np.minimum(d1,d2)
 
+def dline(p,x1,y1,x2,y2):
+    # signed distance from point p to line through (x1,y1) and  (x2,y2)
+    # normal vector to the line
+    nx = y1-y2
+    ny = x2-x1
+    nn = np.sqrt(nx*nx+ny*ny)
+    # return (p-(x1,x2))*n/||n||
+    return -((p[:,0]-x1)*nx+(p[:,1]-y1)*ny)/nn
+    
+def dtriangle(p,x1,y1,x2,y2,x3,y3):
+    return np.maximum(dline(p,x1,y1,x2,y2),np.maximum(dline(p,x2,y2,x3,y3),dline(p,x3,y3,x1,y1)))
+
 def triarea(pts,tri):
     # calculates areas of mesh triangles
     # p = [x_vec,y_vec]
@@ -202,5 +214,5 @@ def distmesh2D(fd,fh,h0,bbox,pfix):
     axes=plt.gca()
     axes.set_aspect(1)
     return pts,tri    
-
+    
     

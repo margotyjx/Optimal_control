@@ -213,10 +213,12 @@ def FEM_committor_solver_Langevin(pts,tri,Aind,Bind,fpot,divfree,beta,gamma):
         ind = tri[j,:]
         verts = pts[ind,:] # vertices of mesh triangle
         vmid = np.reshape(np.sum(verts,axis=0)/3,(1,2)) # midpoint of mesh triangle
-        fac = gamma*np.exp(-beta*fpot(vmid))
+        fac = np.exp(-beta*fpot(vmid))
+        fac_gamma = gamma*fac
+        fac_beta = beta*fac
         f1,f2 = divfree(vmid[:,0],vmid[:,1])
         indt = np.array(ind)[:,None]
-        A[indt,ind] = A[indt,ind] + stima_Langevin(verts)*fac - beta*fac*stimavbdv(verts,f1,f2)
+        A[indt,ind] = A[indt,ind] + stima_Langevin(verts)*fac_gamma - fac_beta*stimavbdv(verts,f1,f2)
 
     # load vector
     b = b - np.matmul(A,q)
@@ -246,10 +248,12 @@ def FEM_backward_committor_solver_Langevin(pts,tri,Aind,Bind,fpot,divfree,Hamilt
         ind = tri[j,:]
         verts = pts[ind,:] # vertices of mesh triangle
         vmid = np.reshape(np.sum(verts,axis=0)/3,(1,2)) # midpoint of mesh triangle
-        fac = gamma*np.exp(-beta*fpot(vmid))
+        fac = np.exp(-beta*fpot(vmid))
+        fac_gamma = gamma*fac
+        fac_beta = beta*fac
         f1,f2 = divfree(vmid[:,0],vmid[:,1])
         indt = np.array(ind)[:,None]
-        A[indt,ind] = A[indt,ind] + stima_Langevin(verts)*fac - beta*fac*stimavbdv(verts,f1,f2)
+        A[indt,ind] = A[indt,ind] + stima_Langevin(verts)*fac_gamma - fac_beta*stimavbdv(verts,f1,f2)
 
     # invariant measure
     mu = np.exp(-beta*Hamiltonian(pts[:,0],pts[:,1]))
@@ -356,6 +360,29 @@ def probability_reactive(pts,tri,fpot,beta,q,Z):
     prob = prob/Z
     return prob
 
+def probability_reactive_Langevin(pts,tri,fpot,beta,q,qminus,Z):
+    Npts = np.size(pts,axis=0)
+    Ntri = np.size(tri,axis=0)
+    # find the reactive current and the transition rate
+    prob = 0
+    for j in range(Ntri):
+        ind = tri[j,:]
+        verts = pts[ind,:]
+        qtri = q[ind]
+        qmtri = qminus[ind]
+        Aux = np.ones((3,3))
+        Aux[1:3,:] = np.transpose(verts)
+        tri_area = 0.5*np.absolute(np.linalg.det(Aux))              
+        vmid = np.reshape(np.sum(verts,axis=0)/3,(1,2)) # midpoint of mesh triangle
+        mu = np.exp(-beta*fpot(vmid)) 
+        qmid = np.sum(qtri)/3
+        qmmid = np.sum(qmtri)/3  
+        
+        prob = prob + tri_area*mu*qmid*qmmid
+    prob = prob/Z
+    return prob
+
+
 def probability_last_A(pts,tri,pts_Amesh,tri_Amesh,fpot,beta,q,Z):
     Npts = np.size(pts,axis=0)
     Ntri = np.size(tri,axis=0)
@@ -386,6 +413,42 @@ def probability_last_A(pts,tri,pts_Amesh,tri_Amesh,fpot,beta,q,Z):
         prob = prob + tri_area*mu
     prob = prob/Z
     return prob
+
+def probability_last_A_Langevin(pts,tri,pts_Amesh,tri_Amesh,fpot,beta,q,qminus,Z):
+    Npts = np.size(pts,axis=0)
+    Ntri = np.size(tri,axis=0)
+    Npts_Amesh = np.size(pts_Amesh,axis=0)
+    Ntri_Amesh = np.size(tri_Amesh,axis=0)
+
+    # find the reactive current and the transition rate
+    prob = 0
+    for j in range(Ntri):
+        ind = tri[j,:]
+        verts = pts[ind,:]
+        qtri = q[ind]
+        qmtri = qminus[ind]
+        Aux = np.ones((3,3))
+        Aux[1:3,:] = np.transpose(verts)
+        tri_area = 0.5*np.absolute(np.linalg.det(Aux))              
+        vmid = np.reshape(np.sum(verts,axis=0)/3,(1,2)) # midpoint of mesh triangle
+        mu = np.exp(-beta*fpot(vmid)) 
+        qmid = np.sum(qtri)/3
+        qmmid = np.sum(qmtri)/3   
+        prob = prob + tri_area*mu*qmmid
+    for j in range(Ntri_Amesh):
+        ind = tri_Amesh[j,:]
+        verts = pts_Amesh[ind,:]
+        qmtri = qminus[ind]
+        Aux = np.ones((3,3))
+        Aux[1:3,:] = np.transpose(verts)
+        tri_area = 0.5*np.absolute(np.linalg.det(Aux))              
+        vmid = np.reshape(np.sum(verts,axis=0)/3,(1,2)) # midpoint of mesh triangle
+        mu = np.exp(-beta*fpot(vmid))
+        qmmid = np.sum(qmtri)/3
+        prob = prob + tri_area*mu*qmmid
+    prob = prob/Z
+    return prob
+
 
 def invariant_pdf(pts,tri,pts_Amesh,tri_Amesh,pts_Bmesh,tri_Bmesh,fpot,beta):
     Npts = np.size(pts,axis=0)
@@ -446,82 +509,21 @@ def reactive_current_transition_rate_Langevin(pts,tri,fpot,divfree,beta,gamma,q,
         Aux = np.ones((3,3))
         Aux[1:3,:] = np.transpose(verts)
         tri_area = 0.5*np.absolute(np.linalg.det(Aux))              
-        vmid = np.reshape(np.sum(verts,axis=0)/3,(1,2)) # midpoint of mesh triangle
-        mu = np.exp(-beta*fpot(vmid)) 
+        vmid = np.reshape(np.sum(verts,axis=0)/3,(2,)) # midpoint of mesh triangle
+        mu = np.exp(-beta*fpot(vmid[0],vmid[1])) 
         qmid = np.sum(qtri)/3
         qmmid = np.sum(qmtri)/3
-#         Rcurrent[j,:] = mu*qmid*qmmid*np.array(divfree(vmid[0],vmid[1]))
-#         Rcurrent[j,1] = Rcurrent[j,1] + mu*(gamma/beta)*(qmmid*g[1]-qmid*gm[1])
+        Rcurrent[j,:] = mu*qmid*qmmid*np.array(divfree(vmid[0],vmid[1]))
+        Rcurrent[j,1] = Rcurrent[j,1] + mu*(gamma/beta)*(qmmid*g[1]-qmid*gm[1])
         Rrate = Rrate + g[1]**2*mu*tri_area                     
     Rrate = Rrate*gamma/(Z*beta)
-#     Rcurrent = Rcurrent/Z 
-#     # map reactive current on vertices
+    Rcurrent = Rcurrent/Z 
+    # map reactive current on vertices
     Rcurrent_verts = np.zeros((Npts,2))
-#     tcount = np.zeros((Npts,1)) # the number of triangles adjacent to each vertex
-#     for j in range(Ntri):
-#         indt = np.array(tri[j,:])[:,None]    
-#         Rcurrent_verts[indt,:] = Rcurrent_verts[indt,:] + Rcurrent[j,:]
-#         tcount[indt] = tcount[indt] + 1
-#     Rcurrent_verts = Rcurrent_verts/np.concatenate((tcount,tcount),axis = 1)
+    tcount = np.zeros((Npts,1)) # the number of triangles adjacent to each vertex
+    for j in range(Ntri):
+        indt = np.array(tri[j,:])[:,None]    
+        Rcurrent_verts[indt,:] = Rcurrent_verts[indt,:] + Rcurrent[j,:]
+        tcount[indt] = tcount[indt] + 1
+    Rcurrent_verts = Rcurrent_verts/np.concatenate((tcount,tcount),axis = 1)
     return Rcurrent_verts, Rrate
-
-
-def probability_last_A_Langevin(pts,tri,pts_Amesh,tri_Amesh,fpot,beta,q,qminus,Z):
-    Npts = np.size(pts,axis=0)
-    Ntri = np.size(tri,axis=0)
-    Npts_Amesh = np.size(pts_Amesh,axis=0)
-    Ntri_Amesh = np.size(tri_Amesh,axis=0)
-
-    # find the reactive current and the transition rate
-    prob = 0
-    for j in range(Ntri):
-        ind = tri[j,:]
-        verts = pts[ind,:]
-        qtri = q[ind]
-        qmtri = qminus[ind]
-        Aux = np.ones((3,3))
-        Aux[1:3,:] = np.transpose(verts)
-        tri_area = 0.5*np.absolute(np.linalg.det(Aux))              
-        vmid = np.reshape(np.sum(verts,axis=0)/3,(1,2)) # midpoint of mesh triangle
-        mu = np.exp(-beta*fpot(vmid)) 
-        qmid = np.sum(qtri)/3
-        qmmid = np.sum(qmtri)/3   
-        prob = prob + tri_area*mu*qmmid
-    for j in range(Ntri_Amesh):
-        ind = tri_Amesh[j,:]
-        verts = pts_Amesh[ind,:]
-        qmtri = qminus[ind]
-        Aux = np.ones((3,3))
-        Aux[1:3,:] = np.transpose(verts)
-        tri_area = 0.5*np.absolute(np.linalg.det(Aux))              
-        vmid = np.reshape(np.sum(verts,axis=0)/3,(1,2)) # midpoint of mesh triangle
-        mu = np.exp(-beta*fpot(vmid))
-        qmmid = np.sum(qmtri)/3
-        prob = prob + tri_area*mu*qmmid
-    prob = prob/Z
-    return prob
-
-
-def probability_reactive_Langevin(pts,tri,fpot,beta,q,qminus,Z):
-    Npts = np.size(pts,axis=0)
-    Ntri = np.size(tri,axis=0)
-    # find the reactive current and the transition rate
-    prob = 0
-    for j in range(Ntri):
-        ind = tri[j,:]
-        verts = pts[ind,:]
-        qtri = q[ind]
-        qmtri = qminus[ind]
-        Aux = np.ones((3,3))
-        Aux[1:3,:] = np.transpose(verts)
-        tri_area = 0.5*np.absolute(np.linalg.det(Aux))              
-        vmid = np.reshape(np.sum(verts,axis=0)/3,(1,2)) # midpoint of mesh triangle
-        mu = np.exp(-beta*fpot(vmid)) 
-        qmid = np.sum(qtri)/3
-        qmmid = np.sum(qmtri)/3  
-        
-        prob = prob + tri_area*mu*qmid*qmmid
-    prob = prob/Z
-    return prob
-
-

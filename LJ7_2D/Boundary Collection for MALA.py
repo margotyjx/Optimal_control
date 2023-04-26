@@ -234,7 +234,7 @@ for w in tqdm(range(200)):
         simtraj[:,k+1] = posit(simtraj,veloc[:,k],k) 
 
 
- np.savez('Mala Boundary Samples re-1.npz', ABord = ABord)
+np.savez('Mala Boundary Samples re-1.npz', ABord = ABord)
 
 
 # # +
