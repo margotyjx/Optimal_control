@@ -117,7 +117,7 @@ def rates_NNpts(model, beta):
     rho_AB = torch.sum(torch.exp(-beta*FE_intr) * (torch.tensor(1) - Q)*Q)/Z
     rho_A = torch.sum(torch.exp(-beta*FE_intr) * (torch.tensor(1) - Q))/Z
     
-    return rho_AB.detach().numpy(), vR.detach().numpy()
+    return rho_AB.detach().numpy(), vR.detach().numpy(), rho_A.detach().numpy()
 
 
 def mean_confidence_interval(data, confidence=0.95):
