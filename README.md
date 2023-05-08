@@ -68,20 +68,21 @@ FEM are also used as a comparison for the committor functions. For more details 
 ## Usage
 
 ### Mueller potential in 2D
-- Train NN-solver for committor function: Mueller/Train_NN.ipynb
+- Train NN-solver for committor function: Mueller/train_NN.py
 - Solve committor function through FEM; generate figures using FEM: Mueller/mueller_TPT_driver.ipynb
 - Compare results of committor using NN-solver and FEM; generate figures of committor values using NN: Mueller/evaluation_file.ipynb
 - Compute transition rate and plot sampled trajectories under control: Mueller/nu_AB-optimal_control.ipynb
 
 ### Lennard-Jones-7 in 2D
-- Train NN-solver for committor function: LJ7_2D/LJ7_NN.ipynb
+- Train NN-solver for committor function: LJ7_2D/train_NN.py
+- Compare results of committor using NN-solver and FEM; generate figures of committor values using NN: LJ7_2D/evaluation.ipynb
 - Solve committor function through FEM: LJ7_2D/LJ7/LJ7_ABellipses.ipynb
 - Compute transition rate with controlled dynamics; sample trajectories under control: LJ7_2D/nu_AB-optimal_control.ipynb
 - Generate sampled trajectories under control: LJ7_2D/graph.ipynb
 - Compute transition rate with unbiased dynamics in 14D: LJ7_2D/MALA_transitio_rate.py
 
 ### Duffing Oscillator in 1D
-- Train PINN-solver for committor function: Duffing/PINN_train.ipynb
+- Train PINN-solver for committor function: Duffing/PINN_train.py
 - Solve committor function through FEM: Duffing/Duffing_committor_ellipse.ipynb
 - Compare results of committor using NN-solver and FEM: Duffing/evaluation_PINN.ipynb
 - Compute transition rate with controlled dynamics: Duffing/Enu_AB-optimal_control.ipynb
