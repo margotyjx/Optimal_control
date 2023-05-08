@@ -296,7 +296,7 @@ def running_traj_alldata(Time,M,beta,dt,X0):
             pickle.dump(TB, f)
 
 # Import initial points
-Data = np.load("Mala Boundary Samples re-1.npz")
+Data = np.load("./data/Mala Boundary Samples re-1.npz")
 Abdry = Data['ABord']
 Abdry_reshaped = np.transpose(Abdry.reshape((7,2,200)),(1,0,2))
 
@@ -324,22 +324,22 @@ X0 = Abdry_reshaped[:,:,init]
 # endregion
 
 # region
-with open("LJ7_count_new.pickle", "rb") as f:
+with open("./data/LJ7_count_new.pickle", "rb") as f:
     Count = pickle.load(f) 
-with open("LJ7_TAB_new.pickle", "rb") as f:
+with open("./data/LJ7_TAB_new.pickle", "rb") as f:
     TAB = pickle.load(f) 
-with open("LJ7_TA_new.pickle", "rb") as f:
+with open("./data/LJ7_TA_new.pickle", "rb") as f:
     TA = pickle.load(f) 
-with open("LJ7_TB_new.pickle", "rb") as f:
+with open("./data/LJ7_TB_new.pickle", "rb") as f:
     TB = pickle.load(f) 
     
-with open("LJ7_count_new (1).pickle", "rb") as f:
+with open("./data/LJ7_count_new (1).pickle", "rb") as f:
     Count2 = pickle.load(f) 
-with open("LJ7_TAB_new (1).pickle", "rb") as f:
+with open("./data/LJ7_TAB_new (1).pickle", "rb") as f:
     TAB2 = pickle.load(f) 
-with open("LJ7_TA_new (1).pickle", "rb") as f:
+with open("./data/LJ7_TA_new (1).pickle", "rb") as f:
     TA2 = pickle.load(f) 
-with open("LJ7_TB_new (1).pickle", "rb") as f:
+with open("./data/LJ7_TB_new (1).pickle", "rb") as f:
     TB2 = pickle.load(f) 
 # endregion
 
@@ -406,5 +406,7 @@ m, se = np.mean(obj), scipy.stats.sem(obj)
 h = se * scipy.stats.t.ppf((1 + 0.95) / 2., n-1)
 print('expected transition time is {}, confidence interval is: [{},{}], with standard error\
        {}'.format(m,m-h,m+h,se))
+
+print(Count)
 
 

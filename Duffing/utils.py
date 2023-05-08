@@ -41,7 +41,7 @@ class functions:
         dUx = x*(self.beta + self.alpha * (x**2))
 
         return dUx
-    
+
 def Hamiltonian(x,y):
     return 0.5*y**2 + 0.25*x**4 - 0.5*x**2
 def fpot_FEM(x):
@@ -71,7 +71,7 @@ class Model1(nn.Module):
         # apply activation function again
         out = torch.sigmoid(out)
         return out
-    
+
 def data_process(train_data):
     """
     boundary points of A will be denoted as 1, boundary points of B will be 2, non boundary points will be 0
@@ -101,4 +101,4 @@ def data_process(train_data):
     torch.save(train_Aset,'./data/trainA.pt')
     torch.save(train_Bset,'./data/trainB.pt')
     torch.save(train_inset,'./data/train_in.pt')
-    
+
