@@ -1,4 +1,5 @@
-# Optimal control for sampling the transition path process and estimating rates
+# Optimal Stochastic Control and Neural Network-Based Solvers for the Committor Problem
+<!-- # Optimal control for sampling the transition path process and estimating rates -->
 
 This repository contains the implementation of paper **Optimal control for sampling the transition path process and estimating rates**. 
 
