@@ -1,7 +1,7 @@
 # Optimal Stochastic Control and Neural Network-Based Solvers for the Committor Problem
 <!-- # Optimal control for sampling the transition path process and estimating rates -->
 
-This repository contains the implementation of paper **Optimal control for sampling the transition path process and estimating rates**. 
+This repository contains the implementation of paper **[Optimal control for sampling the transition path process and estimating rates](https://arxiv.org/abs/2305.17112)**. 
 
 We consider Ito's diffusion process with rare transitions between two predefined sets $A$ and $B$:
 
